@@ -1,13 +1,15 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using NUnit.Framework;
+﻿using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Automatizacija_testnih_slucajeva___KKS
 {
     [TestFixture]
-    public class Cart
+    public class Favourite
     {
         private IWebDriver driver = null!;
 
@@ -25,28 +27,25 @@ namespace Automatizacija_testnih_slucajeva___KKS
         }
 
         [Test]
-        public void AddProductsToCart_ShouldDisplayProductsInCart()
+        public void AddProductsToFavourite_ShouldDisplayProductsInFavoutite()
         {
             // Prijavi se na profil (ovdje unesite korisničko ime i lozinku za prijavu)
             Login("korisnicko_ime", "lozinka");
 
-            // Navigiraj do "Rozi snovi" preko pretrage
-            SearchProduct("Rozi snovi");
+            // Navigiraj do "Trust what you see" preko pretrage
+            SearchProduct("Trust what you see");
 
-            // Klikni na proizvod "Rozi snovi" na rezultatima pretrage
-            ClickProduct("Rozi snovi");
+            // Klikni na proizvod "Trust what you see" na rezultatima pretrage
+            ClickProduct("Trust what you see");
 
-            // Dodaj proizvod u korpu
-            AddToCart();
-
-            // Dodaj proizvod u korpu
-            AddToCart();
+            // Dodaj proizvod u favourite
+            AddToFav();
 
             // Navigiraj do "Korpa"
-            GoToCart();
+            GoToFav();
 
             // Provjeri da li su proizvodi dodani u korpu
-            Assert.IsTrue(IsProductInCart("Rozi snovi"));
+            Assert.IsTrue(IsProductInFav("Trust what you see"));
         }
 
         private void Login(string username, string password)
@@ -88,7 +87,7 @@ namespace Automatizacija_testnih_slucajeva___KKS
         private void ClickProduct(string productName)
         {
             // Pronađite <a> element koji sadrži naziv proizvoda
-            IWebElement productLink = driver.FindElement(By.XPath($"//h5[contains(text(), '{productName.Trim()}')]/ancestor::div[@class='col-md-3 col-xs-6']/a"));
+            IWebElement productLink = driver.FindElement(By.XPath($"//h5[contains(text(), '{productName.Trim()}')]/ancestor::div[contains(@class, 'col-md-3')]/a"));
 
             // Kliknite na <a> element
             productLink.Click();
@@ -97,43 +96,40 @@ namespace Automatizacija_testnih_slucajeva___KKS
             System.Threading.Thread.Sleep(2000);
         }
 
-        private void AddToCart()
+        private void AddToFav()
         {
-            // Pričekajte da se proizvod učita
-            System.Threading.Thread.Sleep(2000);
+            // Pronađite element koji predstavlja gumb "Dodaj u omiljene" za proizvod "Heart Hoops"
+            IWebElement addToFavoriteButton = driver.FindElement(By.CssSelector("a[data-product_id='11939']"));
 
-            // Pronađite gumb "Dodaj u korpu" na stranici proizvoda
-            IWebElement addToCartButton = driver.FindElement(By.CssSelector(".btn.product-detail-add-to-cart-btn"));
+            // Kliknite na gumb "Dodaj u omiljene"
+            addToFavoriteButton.Click();
 
-            // Izvršite JavaScript kod za klik na gumb "Dodaj u korpu"
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", addToCartButton);
-
-            // Pričekajte da se proizvod doda u korpu
+            // Pričekajte da se proizvod doda u omiljene
             System.Threading.Thread.Sleep(2000);
         }
 
 
-        private void GoToCart()
+        private void GoToFav()
         {
-            // Pronađite element koji predstavlja korpu
-            IWebElement cartElement = driver.FindElement(By.CssSelector("a.icon-link[title='Korpa']"));
+            // Pronađite element koji predstavlja link za omiljene proizvode
+            IWebElement favoritesLink = driver.FindElement(By.CssSelector("a[href='https://www.oreabazaar.com/bs/end_user/auth/article']"));
 
-            // Kliknite na korpu
-            cartElement.Click();
+            // Kliknite na link za omiljene proizvode
+            favoritesLink.Click();
 
-            // Pričekajte da se stranica korpe učita
+            // Pričekajte da se otvori stranica s omiljenim proizvodima
             System.Threading.Thread.Sleep(2000);
         }
 
-        private bool IsProductInCart(string productName)
+        private bool IsProductInFav(string productName)
         {
-            // Pronađite elemente koji predstavljaju sve proizvode u korpi
-            IReadOnlyCollection<IWebElement> cartProducts = driver.FindElements(By.CssSelector(".cart__item-title a"));
+            // Pronađite elemente koji predstavljaju sve proizvode u omiljenim proizvodima
+            IReadOnlyCollection<IWebElement> favoriteProducts = driver.FindElements(By.CssSelector(".product-name"));
 
-            // Provjerite da li je traženi proizvod prisutan u korpi
-            foreach (IWebElement product in cartProducts)
+            // Provjerite da li je traženi proizvod prisutan u omiljenim proizvodima
+            foreach (IWebElement product in favoriteProducts)
             {
-                if (product.Text.Trim().Equals(productName, StringComparison.OrdinalIgnoreCase))
+                if (product.Text.Trim().Equals(productName.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
