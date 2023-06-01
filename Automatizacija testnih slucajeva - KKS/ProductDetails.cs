@@ -23,22 +23,21 @@ namespace Automatizacija_testnih_slucajeva___KKS
         }
 
         [Test]
-        public void NavigateToProductDetails_ShouldShowProductDetails()
+        public void TestNavigacijaDoDetaljaProizvoda()
         {
-            // Navigacija na "oreabazaar.com"
-            driver.Navigate().GoToUrl("https://www.oreabazaar.com");
+            var proizvodLink = driver.FindElement(By.XPath("//h5[contains(text(), 'Rozi snovi')]/ancestor::div[@class='col-xs-6 col-sm-4 col-md-2 product-item']"));
+            proizvodLink.Click();
 
-            // Navigacija na "Božićni tanjuri"
-            driver.FindElement(By.LinkText("Božićni tanjuri")).Click();
+            // Pričekajte neko vrijeme da se stranica učita
+            Thread.Sleep(2000); // Pauzirajte izvršavanje na 2 sekunde (prilagodite prema potrebi)
 
-            // Klik na određeni proizvod
-            driver.FindElement(By.LinkText("Božićni tanjuri")).Click();
+            // Provjerite je li korisnik preusmjeren na stranicu detalja o proizvodu
+            var expectedUrl = "https://www.oreabazaar.com/bs/product/11950/rozi-snovi";
+            bool isDetaljiProizvodaDisplayed = driver.Url == expectedUrl;
 
-            // Provjera očekivanog rezultata - provjera prisutnosti elemenata s detaljima o proizvodu
-            bool areDetailsShown = driver.FindElement(By.ClassName("product-details")).Displayed;
-
-            // Provjera očekivanog rezultata
-            Assert.IsTrue(areDetailsShown, "Detalji proizvoda nisu prikazani!");
+            // Provjera da li je korisnik uspješno preusmjeren na stranicu detalja o proizvodu
+            Assert.IsTrue(isDetaljiProizvodaDisplayed, "Korisnik nije preusmjeren na stranicu detalja o proizvodu.");
         }
+
     }
 }

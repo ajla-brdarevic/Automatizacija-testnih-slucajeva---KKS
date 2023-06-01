@@ -5,17 +5,16 @@ using OpenQA.Selenium.Chrome;
 namespace Automatizacija_testnih_slucajeva___KKS
 {
     [TestFixture]
-    public class Category
+    public class CategoryNavigation
     {
-        // Može sadržavati null vrijednost
+        //Može sadržavati null vrijednost
         private IWebDriver driver = null!;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            var options = new ChromeOptions();
-            options.PageLoadStrategy = PageLoadStrategy.Normal; // Promjena strategije učitavanja stranice
-            driver = new ChromeDriver(options);
+            // Postavljanje WebDrivera i otvaranje stranice samo jednom prije početka svih testova
+            driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.oreabazaar.com");
         }
 
@@ -27,19 +26,26 @@ namespace Automatizacija_testnih_slucajeva___KKS
         }
 
         [Test]
-        public void NavigateToCategory_Odjeca_ShouldRedirectToClothingPage()
+        public void CategoryNavigation_ShouldNavigateToClothing()
         {
-            // Klik na "Kategorije"
-            driver.FindElement(By.Id("categories-menu-btn")).Click();
-            /*
-            // Klik na "Odjeća"
-            driver.FindElement(By.LinkText("Odjeća")).Click();
+            // Pronađi link za kategorije i klikni na njega
+            IWebElement categoriesLink = driver.FindElement(By.CssSelector("a#categories-menu-btn"));
+            categoriesLink.Click();
 
-            // Provjera očekivanog rezultata - provjera prisutnosti elementa na stranici s odjećom
-            bool isDisplayed = driver.FindElement(By.XPath("//h1[contains(text(),'Odjeća')]")).Displayed;
+            // Pričekaj da se otvori padajući meni
+            System.Threading.Thread.Sleep(1000); 
 
-            // Provjera očekivanog rezultata
-            Assert.IsTrue(isDisplayed, "Korisnik nije preusmjeren na stranicu s odjećom!");*/
+            // Pronađi link za odjeću i klikni na njega
+            IWebElement clothingLink = driver.FindElement(By.CssSelector("nav.bmenu a[href='https://www.oreabazaar.com/bs/category/1/odjeca']"));
+
+            // Dovesti element u vidljivo područje
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", clothingLink);
+
+            // Klikni na link za odjeću
+            clothingLink.Click();
+
+            // Provjeri da li se nalaziš na stranici sa odjećom
+            Assert.IsTrue(driver.Url.Contains("https://www.oreabazaar.com/bs/category/1/odjeca"), "Nije uspješno navigirano na stranicu sa odjećom.");
         }
     }
 }
