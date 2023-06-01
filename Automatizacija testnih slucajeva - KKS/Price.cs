@@ -38,11 +38,11 @@ namespace Automatizacija_testnih_slucajeva___KKS
 
             // Izračunaj x-koordinatu za donju granicu cijene (4 KM)
             decimal minPrice = 4;
-            int minPriceXCoordinate = xCoordinate + (int)((width * (minPrice / 902.0m)));
+            int minPriceXCoordinate = xCoordinate + (int)((width * ((minPrice - 4) / (902 - 4))));
 
-            // Izračunaj x-koordinatu za gornju granicu cijene (288.14 KM)
-            decimal maxPrice = 288.14m;
-            int maxPriceXCoordinate = xCoordinate + (int)((width * (maxPrice / 902.0m)));
+            // Izračunaj x-koordinatu za gornju granicu cijene (80 KM)
+            decimal maxPrice = 80;
+            int maxPriceXCoordinate = xCoordinate + (int)((width * ((maxPrice - 4) / (902 - 4))));
 
             // Koristi akcije za postavljanje donje granice klizača
             Actions actions = new Actions(driver);
