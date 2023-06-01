@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace Automatizacija_testnih_slucajeva___KKS
@@ -33,10 +32,10 @@ namespace Automatizacija_testnih_slucajeva___KKS
             categoriesLink.Click();
 
             // Pričekaj da se otvori padajući meni
-            System.Threading.Thread.Sleep(1000); 
+            System.Threading.Thread.Sleep(1000);
 
             // Pronađi link za odjeću i klikni na njega
-            IWebElement clothingLink = driver.FindElement(By.CssSelector("nav.bmenu a[href='https://www.oreabazaar.com/bs/category/1/odjeca']"));
+            IWebElement clothingLink = driver.FindElement(By.CssSelector("nav.bmenu a[href='/bs/category/1/odjeca']"));
 
             // Dovesti element u vidljivo područje
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", clothingLink);

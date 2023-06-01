@@ -1,0 +1,87 @@
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
+using System.Collections.ObjectModel;
+
+namespace Automatizacija_testnih_slucajeva___KKS
+{
+    [TestFixture]
+    public class Price
+    {
+        private IWebDriver driver = null!;
+
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            driver = new ChromeDriver();
+            driver.Navigate().GoToUrl("https://www.oreabazaar.com/bs/category/1/odjeca");
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTeardown()
+        {
+            driver.Quit();
+        }
+
+        [Test]
+        public void FilterProductsByPrice_ShouldDisplayProductsInRange()
+        {
+            // Pronađi klizač cijene
+            IWebElement priceSlider = driver.FindElement(By.CssSelector("#slider"));
+
+            // Dobavi koordinate klizača
+            int xCoordinate = priceSlider.Location.X;
+            int yCoordinate = priceSlider.Location.Y;
+
+            // Dohvati širinu klizača
+            int width = priceSlider.Size.Width;
+
+            // Izračunaj x-koordinatu za donju granicu cijene (4 KM)
+            decimal minPrice = 4;
+            int minPriceXCoordinate = xCoordinate + (int)((width * (minPrice / 902.0m)));
+
+            // Izračunaj x-koordinatu za gornju granicu cijene (288.14 KM)
+            decimal maxPrice = 288.14m;
+            int maxPriceXCoordinate = xCoordinate + (int)((width * (maxPrice / 902.0m)));
+
+            // Koristi akcije za postavljanje donje granice klizača
+            Actions actions = new Actions(driver);
+            actions.ClickAndHold(priceSlider)
+                   .MoveByOffset(minPriceXCoordinate - xCoordinate, yCoordinate)
+                   .Release()
+                   .Perform();
+
+            // Pričekaj da se proizvodi ažuriraju nakon filtriranja
+            Thread.Sleep(2000);
+
+            // Pronađi klizač cijene ponovo jer se može promijeniti nakon ažuriranja proizvoda
+            priceSlider = driver.FindElement(By.CssSelector("#slider"));
+
+            // Ponovo dobavi koordinate klizača
+            xCoordinate = priceSlider.Location.X;
+
+            // Koristi akcije za postavljanje gornje granice klizača
+            actions.ClickAndHold(priceSlider)
+                   .MoveByOffset(maxPriceXCoordinate - xCoordinate, yCoordinate)
+                   .Release()
+                   .Perform();
+
+            // Pričekaj da se proizvodi ažuriraju nakon filtriranja
+            Thread.Sleep(2000);
+
+            // Provjeri da li se prikazuju samo proizvodi u odgovarajućem rasponu cijene
+            ReadOnlyCollection<IWebElement> products = driver.FindElements(By.CssSelector(".product-list-item"));
+            foreach (IWebElement product in products)
+            {
+                IWebElement priceElement = product.FindElement(By.CssSelector(".product-price"));
+                string priceText = priceElement.Text;
+                decimal price = decimal.Parse(priceText.Replace("KM", "").Trim());
+
+                Assert.IsTrue(price >= minPrice && price <= maxPrice, $"Proizvod {product.Text} ima cijenu izvan raspona ({minPrice} KM - {maxPrice} KM).");
+            }
+        }
+
+
+    }
+}
+
