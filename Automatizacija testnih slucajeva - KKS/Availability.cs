@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Automatizacija_testnih_slucajeva___KKS
 {
     [TestFixture]
-    public class Country
+    public class Availability
     {
         private IWebDriver driver = null!;
 
@@ -29,29 +29,29 @@ namespace Automatizacija_testnih_slucajeva___KKS
         }
 
         [Test]
-        public void FilterProductsByCategoryAndLocation_ShouldDisplayFilteredProducts()
+        public void FilterProductsByCategoryAndAvailability_ShouldDisplayAvailableProducts()
         {
             // Provjeri da li se nalazimo na odgovarajućoj stranici
             Assert.AreEqual("https://www.oreabazaar.com/bs/category/1/odjeca", driver.Url);
 
-            // Pronađi element padajućeg menija za državu
-            IWebElement countryDropdown = driver.FindElement(By.Name("country"));
+            // Pronađi element padajućeg menija za dostupnost
+            IWebElement availabilityDropdown = driver.FindElement(By.Name("is_available"));
 
-            // Selektuj Bosnu i Hercegovinu iz padajućeg menija
-            SelectElement selectCountry = new SelectElement(countryDropdown);
-            selectCountry.SelectByText("Bosna i Hercegovina");
+            // Selektuj opciju "Proizvodi na stanju" iz padajućeg menija
+            SelectElement selectAvailability = new SelectElement(availabilityDropdown);
+            selectAvailability.SelectByText("Proizvodi na stanju");
 
             // Pričekaj da se proizvodi ažuriraju nakon filtriranja
             System.Threading.Thread.Sleep(2000);
 
-            // Provjeri da li su se proizvodi filtrirali na osnovu lokacije
+            // Provjeri da li su se proizvodi filtrirali na osnovu dostupnosti
             ReadOnlyCollection<IWebElement> products = driver.FindElements(By.CssSelector(".product-list-item"));
             foreach (IWebElement product in products)
             {
-                IWebElement locationElement = product.FindElement(By.CssSelector(".product-location"));
-                string location = locationElement.Text;
+                IWebElement availabilityElement = product.FindElement(By.CssSelector(".product-availability"));
+                string availability = availabilityElement.Text;
 
-                Assert.AreEqual("Bosna i Hercegovina", location, $"Proizvod {product.Text} nije iz Bosne i Hercegovine.");
+                Assert.IsTrue(availability.Contains("Na stanju"), $"Proizvod {product.Text} nije dostupan na stanju.");
             }
         }
     }
