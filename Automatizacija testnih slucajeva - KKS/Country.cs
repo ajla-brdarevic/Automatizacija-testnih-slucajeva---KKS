@@ -41,6 +41,12 @@ namespace Automatizacija_testnih_slucajeva___KKS
             SelectElement selectCountry = new SelectElement(countryDropdown);
             selectCountry.SelectByText("Bosna i Hercegovina");
 
+            // Pronađi gumb "Ažuriraj"
+            IWebElement updateButton = driver.FindElement(By.CssSelector("button.btn.white"));
+
+            // Klikni na gumb "Ažuriraj"
+            updateButton.Click();
+
             // Pričekaj da se proizvodi ažuriraju nakon filtriranja
             System.Threading.Thread.Sleep(2000);
 
