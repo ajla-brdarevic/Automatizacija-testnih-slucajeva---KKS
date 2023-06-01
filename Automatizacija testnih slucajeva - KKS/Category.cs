@@ -33,7 +33,7 @@ namespace Automatizacija_testnih_slucajeva___KKS
             System.Threading.Thread.Sleep(1000);
 
             // Pronađi link za odjeću i klikni na njega
-            IWebElement clothingLink = driver.FindElement(By.CssSelector("nav.bmenu a[href='https://www.oreabazaar.com/bs/category/1/odjeca']"));
+            IWebElement clothingLink = driver.FindElement(By.LinkText("Odjeća"));
             clothingLink.Click();
 
             // Provjeri da li se nalaziš na stranici sa odjećom
