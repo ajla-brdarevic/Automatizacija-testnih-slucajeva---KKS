@@ -1,18 +1,21 @@
-using OpenQA.Selenium;
+Ôªøusing OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Automatizacija_testnih_slucajeva___KKS
 {
     [TestFixture]
-    public class CorrectLogin
+    internal class CorrectMailIncorrectPass
     {
-        //Moûe sadrûavati null vrijednost
         private IWebDriver driver = null!;
-
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            // Postavljanje WebDrivera i otvaranje stranice samo jednom prije poËetka svih testova
+            // Postavljanje WebDrivera i otvaranje stranice samo jednom prije poƒçetka svih testova
             driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.oreabazaar.com/bs/end_user/auth/login");
         }
@@ -20,16 +23,16 @@ namespace Automatizacija_testnih_slucajeva___KKS
         [OneTimeTearDown]
         public void OneTimeTeardown()
         {
-            // Zatvaranje preglednika nakon zavröetka svih testova
+            // Zatvaranje preglednika nakon zavr≈°etka svih testova
             driver.Quit();
         }
 
         [Test]
-        public void LoginWithCorrectCredentials_ShouldSucceed()
+        public void LoginWithCorrectEmailInccorectPass_ShouldFail()
         {
             // Unos ispravnih kredencijala za prijavu
             string email = "ajlabrdarevic@gmail.com";
-            string password = "sifra123";
+            string password = "123sifra";
 
             // Unos emaila i lozinke
             driver.FindElement(By.Id("username")).SendKeys(email);
@@ -38,11 +41,11 @@ namespace Automatizacija_testnih_slucajeva___KKS
             // Klik na gumb za prijavu
             driver.FindElement(By.CssSelector(".green.login-register-button")).Click();
 
-            // Provjera da li je prijava uspjeöna - provjera prisutnosti elementa na prijavljenoj stranici
-            bool isLoggedIn = driver.FindElement(By.Id("user-dropdown-menu")).Displayed;
+            // Provjera pojave poruke o neuspje≈°noj prijavi
+            bool isErrorMessageDisplayed = driver.FindElement(By.ClassName("help-block")).Displayed;
 
-            // Provjera oËekivanog rezultata
-            Assert.IsTrue(isLoggedIn, "Prijavljivanje je uspjelo!");
+            // Provjera oƒçekivanog rezultata
+            Assert.IsTrue(isErrorMessageDisplayed, "Poruka o neuspje≈°noj prijavi se ne prikazuje!");
         }
     }
 }
