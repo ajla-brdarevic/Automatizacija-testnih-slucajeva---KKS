@@ -66,8 +66,14 @@ namespace Automatizacija_testnih_slucajeva___KKS
                    .Release()
                    .Perform();
 
+            // Pronađi gumb "Ažuriraj"
+            IWebElement updateButton = driver.FindElement(By.CssSelector("button.btn.white"));
+
+            // Klikni na gumb "Ažuriraj"
+            updateButton.Click();
+
             // Pričekaj da se proizvodi ažuriraju nakon filtriranja
-            Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(2000);
 
             // Provjeri da li se prikazuju samo proizvodi u odgovarajućem rasponu cijene
             ReadOnlyCollection<IWebElement> products = driver.FindElements(By.CssSelector(".product-list-item"));
