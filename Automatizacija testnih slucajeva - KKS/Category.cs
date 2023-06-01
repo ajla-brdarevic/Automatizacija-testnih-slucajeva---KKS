@@ -1,18 +1,17 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using NUnit.Framework;
 
 namespace Automatizacija_testnih_slucajeva___KKS
 {
     [TestFixture]
     public class CategoryNavigation
     {
-        //Može sadržavati null vrijednost
-        private IWebDriver driver = null!;
+        private IWebDriver driver;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            // Postavljanje WebDrivera i otvaranje stranice samo jednom prije početka svih testova
             driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.oreabazaar.com");
         }
@@ -20,7 +19,6 @@ namespace Automatizacija_testnih_slucajeva___KKS
         [OneTimeTearDown]
         public void OneTimeTeardown()
         {
-            // Zatvaranje preglednika nakon završetka svih testova
             driver.Quit();
         }
 
@@ -35,12 +33,7 @@ namespace Automatizacija_testnih_slucajeva___KKS
             System.Threading.Thread.Sleep(1000);
 
             // Pronađi link za odjeću i klikni na njega
-            IWebElement clothingLink = driver.FindElement(By.CssSelector("nav.bmenu a[href='/bs/category/1/odjeca']"));
-
-            // Dovesti element u vidljivo područje
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", clothingLink);
-
-            // Klikni na link za odjeću
+            IWebElement clothingLink = driver.FindElement(By.CssSelector("nav.bmenu a[href='https://www.oreabazaar.com/bs/category/1/odjeca']"));
             clothingLink.Click();
 
             // Provjeri da li se nalaziš na stranici sa odjećom
