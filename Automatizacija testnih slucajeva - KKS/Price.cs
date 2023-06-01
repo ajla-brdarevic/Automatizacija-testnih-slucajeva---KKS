@@ -38,11 +38,11 @@ namespace Automatizacija_testnih_slucajeva___KKS
 
             // Izračunaj x-koordinatu za donju granicu cijene (4 KM)
             decimal minPrice = 4;
-            int minPriceXCoordinate = xCoordinate + (int)((width * ((minPrice - 4) / (902 - 4))));
+            int minPriceXCoordinate = xCoordinate + (int)Math.Round(width * ((minPrice - 4) / (902 - 4)), MidpointRounding.AwayFromZero);
 
             // Izračunaj x-koordinatu za gornju granicu cijene (80 KM)
             decimal maxPrice = 80;
-            int maxPriceXCoordinate = xCoordinate + (int)((width * ((maxPrice - 4) / (902 - 4))));
+            int maxPriceXCoordinate = xCoordinate + (int)Math.Round(width * ((maxPrice - 4) / (902 - 4)), MidpointRounding.AwayFromZero) - 1;
 
             // Koristi akcije za postavljanje donje granice klizača
             Actions actions = new Actions(driver);
