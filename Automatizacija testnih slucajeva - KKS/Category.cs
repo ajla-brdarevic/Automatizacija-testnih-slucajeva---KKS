@@ -1,13 +1,15 @@
-﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
+﻿using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using System;
 
 namespace Automatizacija_testnih_slucajeva___KKS
 {
     [TestFixture]
     public class Category
     {
-        private IWebDriver driver = null!;
+        private IWebDriver driver;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
@@ -30,7 +32,6 @@ namespace Automatizacija_testnih_slucajeva___KKS
             // Pričekaj da se prijaviš i otvori početna stranica
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
             wait.Until(driver => driver.FindElement(By.Id("user-dropdown-menu")).Displayed);
-
         }
 
         [OneTimeTearDown]
@@ -55,10 +56,10 @@ namespace Automatizacija_testnih_slucajeva___KKS
 
             // Pričekaj da se prikažu kategorije
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-            wait.Until(driver => driver.FindElement(By.Id("user-dropdown-menu")).Displayed);
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".bmenu.menu-panel")));
 
             // Pronađi kategoriju odjeće
-            IWebElement clothingCategory = driver.FindElement(By.CssSelector(".categories-list a[href='https://www.oreabazaar.com/bs/category/1/odjeca']"));
+            IWebElement clothingCategory = driver.FindElement(By.XPath("//a[contains(text(), 'Odjeća')]"));
 
             // Provjeri da li je kategorija odjeće prisutna
             Assert.IsTrue(clothingCategory.Displayed, "Kategorija odjeće nije prisutna.");
@@ -70,6 +71,45 @@ namespace Automatizacija_testnih_slucajeva___KKS
             string expectedUrl = "https://www.oreabazaar.com/bs/category/1/odjeca";
             string actualUrl = driver.Url;
             Assert.AreEqual(expectedUrl, actualUrl, "Kategorija odjeće se nije otvorila.");
+
+            // Provjeri naslov kategorije odjeće
+            IWebElement categoryTitle = driver.FindElement(By.XPath("//h1[contains(text(), 'Odjeća')]"));
+            Assert.IsTrue(categoryTitle.Displayed, "Naslov kategorije odjeće nije prikazan.");
+        }
+        [Test]
+        public void CheckCategory_ClothingExists()
+        {
+            // Provjeri da li je korisnik ulogovan (provjera prisutnosti elementa koji se prikazuje samo kad je korisnik ulogovan)
+            bool isLoggedIn = driver.FindElement(By.Id("user-dropdown-menu")).Displayed;
+            Assert.IsTrue(isLoggedIn, "Korisnik nije ulogovan.");
+
+            // Pronađi gumb za kategorije
+            IWebElement categoriesButton = driver.FindElement(By.Id("categories-menu-btn"));
+
+            // Klikni na gumb za kategorije
+            categoriesButton.Click();
+
+            // Pričekaj da se prikažu kategorije
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".bmenu.menu-panel")));
+
+            // Pronađi kategoriju odjeće
+            IWebElement clothingCategory = driver.FindElement(By.XPath("//a[contains(text(), 'Odjeća')]"));
+
+            // Provjeri da li je kategorija odjeće prisutna
+            Assert.IsTrue(clothingCategory.Displayed, "Kategorija odjeće nije prisutna.");
+
+            // Klikni na kategoriju odjeće
+            clothingCategory.Click();
+
+            // Provjeri da li se otvorila kategorija odjeće
+            string expectedUrl = "https://www.oreabazaar.com/bs/category/1/odjeca";
+            string actualUrl = driver.Url;
+            Assert.AreEqual(expectedUrl, actualUrl, "Kategorija odjeće se nije otvorila.");
+
+            // Provjeri naslov kategorije odjeće
+            IWebElement categoryTitle = driver.FindElement(By.XPath("//h1[contains(text(), 'Odjeća')]"));
+            Assert.IsTrue(categoryTitle.Displayed, "Naslov kategorije odjeće nije prikazan.");
         }
     }
 }
